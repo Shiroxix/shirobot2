@@ -1,3 +1,5 @@
+Aqui
+
 /*
 
 Este arquivo index.js é o mesmo existente em "src/index.js", ele só está aqui
@@ -112,7 +114,7 @@ if (badMacHandler.handleError(error, "uncaughtException")) {
 return;
 }
 
-errorLog(`Erro crítico não capturado: ${error.message});
+errorLog(Erro crítico não capturado: ${error.message});
 errorLog(error.stack);
 
 if (
