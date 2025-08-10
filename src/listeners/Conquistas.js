@@ -57,7 +57,6 @@ function salvarFichario(data) {
 module.exports = {
   name: "autoConquistas",
   description: "Listener automático para conceder conquistas pelas palavras-chave.",
-  event: "message", // escuta todas as mensagens
   handle: async ({ message, sendText }) => {
     if (!message.body) return;
     const userId = message.sender.id || message.sender;
