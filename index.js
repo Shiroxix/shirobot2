@@ -1,102 +1,80 @@
-/*
- * Arquivo index.js para iniciar o bot com listener de conquistas automático
- */
+const fs = require('fs');
+const path = require('path');
 
-const { connect } = require("./src/connection");
-const { load } = require("./src/loader");
-const { badMacHandler } = require("./src/utils/badMacHandler");
-const {
-  successLog,
-  errorLog,
-  warningLog,
-  bannerLog,
-  infoLog,
-} = require("./src/utils/logger");
+const palavrasChave = {
+  "foda": "🔥 Conquista desbloqueada: *Fogo no Parquinho*! Você chegou chegando.",
+  "caralho": "💥 Conquista desbloqueada: *Explosão de Energia*. Cuidado que você é intenso!",
+  "merda": "💩 Conquista desbloqueada: *Rei/Reina do Caos*. Você sabe como causar impacto.",
+  "puta": "🔥 Conquista desbloqueada: *Sem Papas na Língua*. Você fala o que pensa.",
+  "buceta": "🔥 Conquista desbloqueada: *Realeza Selvagem*. Só pra quem é brabo.",
+  "cu": "💥 Conquista desbloqueada: *Sem Vergonha*. Você não tem medo de nada.",
+  "viado": "🌈 Conquista desbloqueada: *Orgulho e Glória*. Autenticidade acima de tudo.",
+  "gay": "🌈 Conquista desbloqueada: *Amor Livre*. Aqui é todo mundo respeitado.",
+  "pau": "🔥 Conquista desbloqueada: *Força Bruta*. Você não passa despercebido.",
+  "gostosa": "🔥 Conquista desbloqueada: *Charme Letal*. Você arrasa sem esforço.",
+  "fodase": "💀 Conquista desbloqueada: *Indiferente*. Nada te abala, nem fodase.",
+  "putaquepariu": "🔥 Conquista desbloqueada: *Explosão de Emoção*. Aqui o bicho pega.",
+  "merdinha": "💩 Conquista desbloqueada: *Pequeno Caos*. Nem tudo precisa ser perfeito.",
+  "fodão": "👊 Conquista desbloqueada: *Lenda Viva*. Nível hard desbloqueado.",
+  "nojento": "🤢 Conquista desbloqueada: *Sem Filtro*. Você não tem papas na língua.",
+  "babaca": "😈 Conquista desbloqueada: *Sem Censura*. Chega chegando e fala o que quer.",
+  "chato": "😒 Conquista desbloqueada: *Persistente*. Você não sai da cabeça de ninguém.",
+  "filho da puta": "🔥 Conquista desbloqueada: *Rei/Reina do Improviso*. Você manda no rolê.",
+  "bomba": "💣 Conquista desbloqueada: *Explosão de Impacto*. Todo mundo percebeu você.",
+  "louco": "🤪 Conquista desbloqueada: *Alma Livre*. Sem medo de ser quem é.",
+  "doido": "🤪 Conquista desbloqueada: *Fora da Caixa*. Sempre surpreendendo.",
+  "brabo": "🔥 Conquista desbloqueada: *Mestre do Caos*. Você é respeitado na área.",
+  "fera": "🐯 Conquista desbloqueada: *Animal*. Instinto puro.",
+  "monstro": "👹 Conquista desbloqueada: *Imparável*. Nada te segura.",
+  "boss": "👑 Conquista desbloqueada: *Chefão*. Nível máximo ativado.",
+};
 
-// Importa o listener das conquistas automáticas
-const conquistasListener = require('./src/listeners/conquistas');
+const totalConquistas = Object.keys(palavrasChave).length;
+const ficharioPath = path.resolve(__dirname, "./conquistasUsuarios.json");
 
-process.on("uncaughtException", (error) => {
-  if (badMacHandler.handleError(error, "uncaughtException")) {
-    return;
-  }
-
-  errorLog(`Erro crítico não capturado: ${error.message}`);
-  errorLog(error.stack);
-
-  if (
-    !error.message.includes("ENOTFOUND") &&
-    !error.message.includes("timeout")
-  ) {
-    process.exit(1);
-  }
-});
-
-process.on("unhandledRejection", (reason, promise) => {
-  if (badMacHandler.handleError(reason, "unhandledRejection")) {
-    return;
-  }
-
-  errorLog(`Promessa rejeitada não tratada:`, reason);
-});
-
-async function startBot() {
+function carregarFichario() {
   try {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-    process.setMaxListeners(1500);
-
-    bannerLog();
-    infoLog("Iniciando meus componentes internos...");
-
-    const stats = badMacHandler.getStats();
-    if (stats.errorCount > 0) {
-      warningLog(
-        `BadMacHandler stats: ${stats.errorCount}/${stats.maxRetries} erros`
-      );
+    if (fs.existsSync(ficharioPath)) {
+      const data = fs.readFileSync(ficharioPath, "utf-8");
+      return JSON.parse(data);
+    } else {
+      return {};
     }
-
-    const socket = await connect();
-
-    load(socket);
-
-    // Escuta novas mensagens e encaminha para o listener de conquistas
-    socket.ev.on('messages.upsert', async (m) => {
-      for (const msg of m.messages) {
-        if (!msg.key.fromMe && msg.message) {
-          await conquistasListener.handle({
-            message: msg,
-            sendText: async (text) => {
-              await socket.sendMessage(msg.key.remoteJid, { text });
-            },
-          });
-        }
-      }
-    });
-
-    successLog("✅ Bot iniciado com sucesso!");
-
-    setInterval(() => {
-      const currentStats = badMacHandler.getStats();
-      if (currentStats.errorCount > 0) {
-        warningLog(
-          `BadMacHandler stats: ${currentStats.errorCount}/${currentStats.maxRetries} erros`
-        );
-      }
-    }, 300_000);
-  } catch (error) {
-    if (badMacHandler.handleError(error, "bot-startup")) {
-      warningLog("Erro Bad MAC durante inicialização, tentando novamente...");
-
-      setTimeout(() => {
-        startBot();
-      }, 5000);
-      return;
-    }
-
-    errorLog(`Erro ao iniciar o bot: ${error.message}`);
-    errorLog(error.stack);
-    process.exit(1);
+  } catch (err) {
+    console.error("Erro ao carregar fichário:", err);
+    return {};
   }
 }
 
-startBot();;
+function salvarFichario(data) {
+  try {
+    fs.writeFileSync(ficharioPath, JSON.stringify(data, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Erro ao salvar fichário:", err);
+  }
+}
+
+// Dentro do startBot(), depois do load(socket);
+socket.on("message", async (message) => {
+  if (!message.body) return;
+
+  const userId = message.sender.id || message.sender;
+  const texto = message.body.toLowerCase();
+
+  let fichario = carregarFichario();
+
+  if (!fichario[userId]) fichario[userId] = [];
+
+  for (const [chave, conquista] of Object.entries(palavrasChave)) {
+    if (texto.includes(chave)) {
+      if (!fichario[userId].includes(chave)) {
+        fichario[userId].push(chave);
+        salvarFichario(fichario);
+
+        const conquistasUser = fichario[userId].length;
+        await socket.sendText(message.from, `${conquista} (${conquistasUser}/${totalConquistas} conquistas desbloqueadas)`);
+      }
+      break;
+    }
+  }
+});
