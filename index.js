@@ -112,7 +112,7 @@ if (badMacHandler.handleError(error, "uncaughtException")) {
 return;
 }
 
-errorLog(Erro crítico não capturado: ${error.message});
+errorLog(`Erro crítico não capturado: ${error.message});
 errorLog(error.stack);
 
 if (
