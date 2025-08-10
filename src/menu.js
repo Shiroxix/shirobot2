@@ -93,6 +93,7 @@ const sections = [
       "lutar",
       "matar",
       "socar",
+      "cenario",
     ],
   },
   {
