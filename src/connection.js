@@ -38,6 +38,11 @@ const {
 const NodeCache = require("node-cache");
 const { TEMP_DIR } = require("./config");
 const { badMacHandler } = require("./utils/badMacHandler");
+const fs = require("node:fs");
+
+if (!fs.existsSync(TEMP_DIR)) {
+  fs.mkdirSync(TEMP_DIR, { recursive: true });
+}
 
 const logger = pino(
   { timestamp: () => `,"time":"${new Date().toJSON()}"` },
@@ -59,7 +64,7 @@ async function connect() {
 
   const { state, saveCreds } = await useMultiFileAuthState(baileysFolder);
 
-  const { version } = await fetchLatestBaileysVersion();
+  const { version, isLatest } = await fetchLatestBaileysVersion();
 
   const socket = makeWASocket({
     version,
@@ -175,6 +180,10 @@ async function connect() {
       }
     } else if (connection === "open") {
       successLog("Fui conectado com sucesso!");
+      infoLog("Versão do WhatsApp Web: " + version.join("."));
+      infoLog(
+        "É a última versão do WhatsApp Web?: " + (isLatest ? "Sim" : "Não")
+      );
       badMacErrorCount = 0;
       badMacHandler.resetErrorCount();
     } else {
@@ -186,29 +195,5 @@ async function connect() {
 
   return socket;
 }
-
-process.on("uncaughtException", (error) => {
-  if (badMacHandler.handleError(error, "uncaughtException")) {
-    return;
-  }
-
-  errorLog(`Erro crítico não capturado: ${error.message}`);
-  errorLog(error.stack);
-
-  if (
-    !error.message.includes("ENOTFOUND") &&
-    !error.message.includes("timeout")
-  ) {
-    process.exit(1);
-  }
-});
-
-process.on("unhandledRejection", (reason, promise) => {
-  if (badMacHandler.handleError(reason, "unhandledRejection")) {
-    return;
-  }
-
-  errorLog(`Promessa rejeitada não tratada:`, reason);
-});
 
 exports.connect = connect;
