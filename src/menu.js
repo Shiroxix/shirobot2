@@ -1,6 +1,5 @@
-
 /**
- * Menu do bot
+ * Menu do bot - Estilo Futurista
  *
  * @author Dev Gui
  */
@@ -124,30 +123,41 @@ const sections = [
 ];
 
 function formatCommands(commands) {
-  return commands.map(cmd => `→ ${PREFIX}${cmd}`).join("\n");
+  return commands.map(cmd => `  ▸  ${PREFIX}${cmd}`).join("\n");
 }
 
 exports.menuMessage = () => {
   const date = new Date();
 
+  const topBorder = "╔════════════════════════════════════════════════╗";
+  const bottomBorder = "╚════════════════════════════════════════════════╝";
+  const middleBorder = "╠════════════════════════════════════════════════╣";
+
   let menu = `
-┌───────────────────────────────┐
-│ ✨ BEM VINDO! ${readMore().trim()}
-├───────────────────────────────┤
-│ • Bot: ${BOT_NAME}
-│ • Data: ${date.toLocaleDateString("pt-BR")}
-│ • Hora: ${date.toLocaleTimeString("pt-BR")}
-│ • Prefixo: ${PREFIX}
-│ • Versão: ${packageInfo.version}
-└───────────────────────────────┘
+${topBorder}
+║ 🛰️  BEM VINDO AO  ${BOT_NAME.toUpperCase()}  🛰️
+║────────────────────────────────────────────────║
+║ Data: ${date.toLocaleDateString("pt-BR").padEnd(36)}║
+║ Hora: ${date.toLocaleTimeString("pt-BR").padEnd(36)}║
+║ Prefixo: ${PREFIX.padEnd(33)}║
+║ Versão: ${packageInfo.version.padEnd(34)}║
+║────────────────────────────────────────────────║
+║${readMore().padEnd(48)}║
+${middleBorder}
 `;
 
   for (const section of sections) {
+    const titleLine = `║ ⚡ ${section.emoji} ${section.title.toUpperCase()} ${" ".repeat(44 - section.title.length)}║`;
+    const commands = formatCommands(section.commands).split("\n").map(line => `║${line.padEnd(48)}║`).join("\n");
+
     menu += `
-→─── ${section.emoji} ${section.title} ───→
-${formatCommands(section.commands)}
+${titleLine}
+${commands}
+${middleBorder}
 `;
   }
 
-  return menu.trim();
+  menu += bottomBorder;
+
+  return menu;
 };
