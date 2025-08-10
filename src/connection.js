@@ -187,4 +187,28 @@ async function connect() {
   return socket;
 }
 
+process.on("uncaughtException", (error) => {
+  if (badMacHandler.handleError(error, "uncaughtException")) {
+    return;
+  }
+
+  errorLog(`Erro crítico não capturado: ${error.message}`);
+  errorLog(error.stack);
+
+  if (
+    !error.message.includes("ENOTFOUND") &&
+    !error.message.includes("timeout")
+  ) {
+    process.exit(1);
+  }
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  if (badMacHandler.handleError(reason, "unhandledRejection")) {
+    return;
+  }
+
+  errorLog(`Promessa rejeitada não tratada:`, reason);
+});
+
 exports.connect = connect;
