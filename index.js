@@ -1,80 +1,163 @@
-const fs = require('fs');
-const path = require('path');
+/**
+ * Menu do bot - Estilo Futurista
+ *
+ * @author Dev Gui
+ */
+const { BOT_NAME, PREFIX } = require("./config");
+const packageInfo = require("../package.json");
+const { readMore } = require("./utils");
 
-const palavrasChave = {
-  "foda": "🔥 Conquista desbloqueada: *Fogo no Parquinho*! Você chegou chegando.",
-  "caralho": "💥 Conquista desbloqueada: *Explosão de Energia*. Cuidado que você é intenso!",
-  "merda": "💩 Conquista desbloqueada: *Rei/Reina do Caos*. Você sabe como causar impacto.",
-  "puta": "🔥 Conquista desbloqueada: *Sem Papas na Língua*. Você fala o que pensa.",
-  "buceta": "🔥 Conquista desbloqueada: *Realeza Selvagem*. Só pra quem é brabo.",
-  "cu": "💥 Conquista desbloqueada: *Sem Vergonha*. Você não tem medo de nada.",
-  "viado": "🌈 Conquista desbloqueada: *Orgulho e Glória*. Autenticidade acima de tudo.",
-  "gay": "🌈 Conquista desbloqueada: *Amor Livre*. Aqui é todo mundo respeitado.",
-  "pau": "🔥 Conquista desbloqueada: *Força Bruta*. Você não passa despercebido.",
-  "gostosa": "🔥 Conquista desbloqueada: *Charme Letal*. Você arrasa sem esforço.",
-  "fodase": "💀 Conquista desbloqueada: *Indiferente*. Nada te abala, nem fodase.",
-  "putaquepariu": "🔥 Conquista desbloqueada: *Explosão de Emoção*. Aqui o bicho pega.",
-  "merdinha": "💩 Conquista desbloqueada: *Pequeno Caos*. Nem tudo precisa ser perfeito.",
-  "fodão": "👊 Conquista desbloqueada: *Lenda Viva*. Nível hard desbloqueado.",
-  "nojento": "🤢 Conquista desbloqueada: *Sem Filtro*. Você não tem papas na língua.",
-  "babaca": "😈 Conquista desbloqueada: *Sem Censura*. Chega chegando e fala o que quer.",
-  "chato": "😒 Conquista desbloqueada: *Persistente*. Você não sai da cabeça de ninguém.",
-  "filho da puta": "🔥 Conquista desbloqueada: *Rei/Reina do Improviso*. Você manda no rolê.",
-  "bomba": "💣 Conquista desbloqueada: *Explosão de Impacto*. Todo mundo percebeu você.",
-  "louco": "🤪 Conquista desbloqueada: *Alma Livre*. Sem medo de ser quem é.",
-  "doido": "🤪 Conquista desbloqueada: *Fora da Caixa*. Sempre surpreendendo.",
-  "brabo": "🔥 Conquista desbloqueada: *Mestre do Caos*. Você é respeitado na área.",
-  "fera": "🐯 Conquista desbloqueada: *Animal*. Instinto puro.",
-  "monstro": "👹 Conquista desbloqueada: *Imparável*. Nada te segura.",
-  "boss": "👑 Conquista desbloqueada: *Chefão*. Nível máximo ativado.",
+const sections = [
+  {
+    title: "DONO",
+    emoji: "🌌",
+    commands: [
+      "exec",
+      "get-id",
+      "off",
+      "on",
+      "set-menu-image",
+    ],
+  },
+  {
+    title: "ADMINS",
+    emoji: "⭐",
+    commands: [
+      "abrir",
+      "agendar-mensagem",
+      "anti-audio (1/0)",
+      "anti-document (1/0)",
+      "anti-event (1/0)",
+      "anti-image (1/0)",
+      "anti-link (1/0)",
+      "anti-product (1/0)",
+      "anti-sticker (1/0)",
+      "anti-video (1/0)",
+      "auto-responder (1/0)",
+      "ban",
+      "delete",
+      "exit (1/0)",
+      "fechar",
+      "hidetag",
+      "limpar",
+      "link-grupo",
+      "mute",
+      "only-admin (1/0)",
+      "promover",
+      "rebaixar",
+      "revelar",
+      "unmute",
+      "welcome (1/0)",
+    ],
+  },
+  {
+    title: "PRINCIPAL",
+    emoji: "🚀",
+    commands: [
+      "attp",
+      "cep",
+      "exemplos-de-mensagens",
+      "fake-chat",
+      "gerar-link",
+      "get-lid",
+      "google-search",
+      "perfil",
+      "ping",
+      "raw-message",
+      "rename",
+      "sticker",
+      "to-image",
+      "ttp",
+      "yt-search",
+    ],
+  },
+  {
+    title: "DOWNLOADS",
+    emoji: "🎶",
+    commands: [
+      "play-audio",
+      "play-video",
+      "tik-tok",
+      "yt-mp3",
+      "yt-mp4",
+    ],
+  },
+  {
+    title: "BRINCADEIRAS",
+    emoji: "🎡",
+    commands: [
+      "abracar",
+      "beijar",
+      "dado",
+      "jantar",
+      "lutar",
+      "matar",
+      "socar",
+    ],
+  },
+  {
+    title: "IA",
+    emoji: "🚀",
+    commands: [
+      "gemini",
+      "ia-sticker",
+      "pixart",
+      "stable-diffusion-turbo",
+    ],
+  },
+  {
+    title: "CANVAS",
+    emoji: "❇",
+    commands: [
+      "blur",
+      "bolsonaro",
+      "cadeia",
+      "contraste",
+      "espelhar",
+      "gray",
+      "inverter",
+      "pixel",
+      "rip",
+    ],
+  },
+];
+
+function formatCommands(commands) {
+  return commands.map(cmd => `  ▸  ${PREFIX}${cmd}`).join("\n");
+}
+
+exports.menuMessage = () => {
+  const date = new Date();
+
+  const topBorder = "╔════════════════════════════════════════════════╗";
+  const bottomBorder = "╚════════════════════════════════════════════════╝";
+  const middleBorder = "╠════════════════════════════════════════════════╣";
+
+  let menu = `
+${topBorder}
+║ 🛰️  BEM VINDO AO  ${BOT_NAME.toUpperCase()}  🛰️
+║────────────────────────────────────────────────║
+║ Data: ${date.toLocaleDateString("pt-BR").padEnd(36)}║
+║ Hora: ${date.toLocaleTimeString("pt-BR").padEnd(36)}║
+║ Prefixo: ${PREFIX.padEnd(33)}║
+║ Versão: ${packageInfo.version.padEnd(34)}║
+║────────────────────────────────────────────────║
+║${readMore().padEnd(48)}║
+${middleBorder}
+`;
+
+  for (const section of sections) {
+    const titleLine = `║ ⚡ ${section.emoji} ${section.title.toUpperCase()} ${" ".repeat(44 - section.title.length)}║`;
+    const commands = formatCommands(section.commands).split("\n").map(line => `║${line.padEnd(48)}║`).join("\n");
+
+    menu += `
+${titleLine}
+${commands}
+${middleBorder}
+`;
+  }
+
+  menu += bottomBorder;
+
+  return menu;
 };
-
-const totalConquistas = Object.keys(palavrasChave).length;
-const ficharioPath = path.resolve(__dirname, "./conquistasUsuarios.json");
-
-function carregarFichario() {
-  try {
-    if (fs.existsSync(ficharioPath)) {
-      const data = fs.readFileSync(ficharioPath, "utf-8");
-      return JSON.parse(data);
-    } else {
-      return {};
-    }
-  } catch (err) {
-    console.error("Erro ao carregar fichário:", err);
-    return {};
-  }
-}
-
-function salvarFichario(data) {
-  try {
-    fs.writeFileSync(ficharioPath, JSON.stringify(data, null, 2), "utf-8");
-  } catch (err) {
-    console.error("Erro ao salvar fichário:", err);
-  }
-}
-
-// Dentro do startBot(), depois do load(socket);
-socket.on("message", async (message) => {
-  if (!message.body) return;
-
-  const userId = message.sender.id || message.sender;
-  const texto = message.body.toLowerCase();
-
-  let fichario = carregarFichario();
-
-  if (!fichario[userId]) fichario[userId] = [];
-
-  for (const [chave, conquista] of Object.entries(palavrasChave)) {
-    if (texto.includes(chave)) {
-      if (!fichario[userId].includes(chave)) {
-        fichario[userId].push(chave);
-        salvarFichario(fichario);
-
-        const conquistasUser = fichario[userId].length;
-        await socket.sendText(message.from, `${conquista} (${conquistasUser}/${totalConquistas} conquistas desbloqueadas)`);
-      }
-      break;
-    }
-  }
-});
