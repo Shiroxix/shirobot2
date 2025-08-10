@@ -1,3 +1,4 @@
+
 /**
  * Menu do bot
  *
@@ -123,30 +124,28 @@ const sections = [
 ];
 
 function formatCommands(commands) {
-  return commands.map(cmd => `▢ • ${PREFIX}${cmd}`).join("\n");
+  return commands.map(cmd => `→ ${PREFIX}${cmd}`).join("\n");
 }
 
 exports.menuMessage = () => {
   const date = new Date();
 
-  let menu = `╭━━⪩ BEM VINDO! ⪨━━${readMore()}
-▢
-▢ • ${BOT_NAME}
-▢ • Data: ${date.toLocaleDateString("pt-br")}
-▢ • Hora: ${date.toLocaleTimeString("pt-br")}
-▢ • Prefixo: ${PREFIX}
-▢ • Versão: ${packageInfo.version}
-▢
-╰━━─「🪐」─━━
+  let menu = `
+┌───────────────────────────────┐
+│ ✨ BEM VINDO! ${readMore().trim()}
+├───────────────────────────────┤
+│ • Bot: ${BOT_NAME}
+│ • Data: ${date.toLocaleDateString("pt-BR")}
+│ • Hora: ${date.toLocaleTimeString("pt-BR")}
+│ • Prefixo: ${PREFIX}
+│ • Versão: ${packageInfo.version}
+└───────────────────────────────┘
 `;
 
   for (const section of sections) {
     menu += `
-╭━━⪩ ${section.title} ⪨━━
-▢
+→─── ${section.emoji} ${section.title} ───→
 ${formatCommands(section.commands)}
-▢
-╰━━─「${section.emoji}」─━━
 `;
   }
 
