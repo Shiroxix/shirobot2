@@ -1,10 +1,3 @@
-/*
- * Este arquivo index.js é o mesmo existente em "src/index.js", ele só está aqui
- * para facilitar a execução do bot em algumas hosts.
- *
- * (seu comentário original aqui...)
- */
-
 const { connect } = require("./src/connection");
 const { load } = require("./src/loader");
 const { badMacHandler } = require("./src/utils/badMacHandler");
@@ -16,8 +9,8 @@ const {
   infoLog,
 } = require("./src/utils/logger");
 
-// Importa o listener de conquistas automáticas
-const autoConquistasListener = require('./src/listeners/autoConquistas');
+// Corrigido o nome do listener para bater com o arquivo conquistas.js
+const conquistasListener = require('./src/listeners/conquistas');
 
 process.on("uncaughtException", (error) => {
   if (badMacHandler.handleError(error, "uncaughtException")) {
@@ -62,8 +55,8 @@ async function startBot() {
 
     load(socket);
 
-    // Adiciona o listener aqui para escutar as mensagens
-    socket.on('message', autoConquistasListener.handle);
+    // Ativa o listener das conquistas na mensagem
+    socket.on('message', conquistasListener.handle);
 
     successLog("✅ Bot iniciado com sucesso!");
 
