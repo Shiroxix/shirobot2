@@ -1,163 +1,182 @@
-/**
- * Menu do bot - Estilo Futurista
- *
- * @author Dev Gui
- */
-const { BOT_NAME, PREFIX } = require("./config");
-const packageInfo = require("../package.json");
-const { readMore } = require("./utils");
+/*
 
-const sections = [
-  {
-    title: "DONO",
-    emoji: "🌌",
-    commands: [
-      "exec",
-      "get-id",
-      "off",
-      "on",
-      "set-menu-image",
-    ],
-  },
-  {
-    title: "ADMINS",
-    emoji: "⭐",
-    commands: [
-      "abrir",
-      "agendar-mensagem",
-      "anti-audio (1/0)",
-      "anti-document (1/0)",
-      "anti-event (1/0)",
-      "anti-image (1/0)",
-      "anti-link (1/0)",
-      "anti-product (1/0)",
-      "anti-sticker (1/0)",
-      "anti-video (1/0)",
-      "auto-responder (1/0)",
-      "ban",
-      "delete",
-      "exit (1/0)",
-      "fechar",
-      "hidetag",
-      "limpar",
-      "link-grupo",
-      "mute",
-      "only-admin (1/0)",
-      "promover",
-      "rebaixar",
-      "revelar",
-      "unmute",
-      "welcome (1/0)",
-    ],
-  },
-  {
-    title: "PRINCIPAL",
-    emoji: "🚀",
-    commands: [
-      "attp",
-      "cep",
-      "exemplos-de-mensagens",
-      "fake-chat",
-      "gerar-link",
-      "get-lid",
-      "google-search",
-      "perfil",
-      "ping",
-      "raw-message",
-      "rename",
-      "sticker",
-      "to-image",
-      "ttp",
-      "yt-search",
-    ],
-  },
-  {
-    title: "DOWNLOADS",
-    emoji: "🎶",
-    commands: [
-      "play-audio",
-      "play-video",
-      "tik-tok",
-      "yt-mp3",
-      "yt-mp4",
-    ],
-  },
-  {
-    title: "BRINCADEIRAS",
-    emoji: "🎡",
-    commands: [
-      "abracar",
-      "beijar",
-      "dado",
-      "jantar",
-      "lutar",
-      "matar",
-      "socar",
-    ],
-  },
-  {
-    title: "IA",
-    emoji: "🚀",
-    commands: [
-      "gemini",
-      "ia-sticker",
-      "pixart",
-      "stable-diffusion-turbo",
-    ],
-  },
-  {
-    title: "CANVAS",
-    emoji: "❇",
-    commands: [
-      "blur",
-      "bolsonaro",
-      "cadeia",
-      "contraste",
-      "espelhar",
-      "gray",
-      "inverter",
-      "pixel",
-      "rip",
-    ],
-  },
-];
+Este arquivo index.js é o mesmo existente em "src/index.js", ele só está aqui
 
-function formatCommands(commands) {
-  return commands.map(cmd => `  ▸  ${PREFIX}${cmd}`).join("\n");
+para facilitar a execução do bot em algumas hosts.
+
+Se você clicou aqui é porque provavelmente já usou um bot de "case" e com um "index.js" de 20 mil linhas...
+
+Eu sei, eu entendo você!
+
+O que é melhor? Dar erro no seu play, você ir no arquivo "play.js" e corrigir
+
+ou ir na linha 71023 do "index.js" e corrigir?
+
+Imagina se vc cola sua "case" errado e esquece de fechar
+
+ou abrir um parênteses, uma chave...
+
+Você põe o bot pra rodar, dá vários erros e você não sabe resolver...
+
+Adivinha o que você faz?
+
+Você volta "a index.js" pra que estava antes, não é verdade?
+
+É isso que não queremos! Queremos um código limpo, legível e de fácil manutenção!
+
+Nós criamos código para humanos, não para máquinas, então, quanto mais simples, melhor!
+
+A partir de agora, vamos trocar a palavra "case" por "comando", ok? Vamos lá!
+
+---------------- 🤖 ONDE ESTÃO OS COMANDOS? 🤖 ----------------
+
+Você encontra os comandos dentro da pasta "src/commands"
+
+Não entendeu? Vamos lá:
+
+Abra a pasta "src"
+
+Depois, abra a pasta "commands"
+
+Perceba que dentro dela tem 3 pastas:
+
+📁 admin
+
+
+📁 member
+
+
+📁 owner
+
+
+Dentro da pasta admin tem comandos administrativos.
+
+Dentro da pasta member tem comandos para membros.
+
+Dentro da pasta owner tem comandos que são acessados somente pelo dono do bot/grupo!
+
+Simples, não é mesmo? Ah, detalhe, não precisa colocar um "if" para saber se o comando é de admin ou de dono.
+
+O bot já faz isso para você! Basta colocar o comando na pasta correspondente!
+
+---------------- 🤖 ONDE MODIFICO O MENU? 🤖 ----------------
+
+Abra a pasta "src"
+
+Vá no arquivo "menu.js" e edite o menu!
+
+Só lembrando, faça tudo dentro das crases (`), pois é um template string!
+
+Não entendeu?
+
+Veja:
+
+Olá tudo bem? - Isto está CORRETO ✅
+
+Olá tudo bem? - Isto está ERRADO (veja que o "Olá" está fora das crases) ❌
+
+---------------- 🤖 COMO TROCO A FOTO DO BOT? 🤖 ----------------
+
+Abra a pasta "assets"
+
+Depois, abra a pasta "images"
+
+Substitua a imagem "takeshi-bot.png" por outra de sua preferência!
+
+Só não esqueça de manter o nome "takeshi-bot.png"
+
+---------------- 🚀 IMPORTANTE 🚀 ----------------
+
+Leia o tutorial completo em: https://github.com/guiireal/takeshi-bot?tab=readme-ov-file#instala%C3%A7%C3%A3o-no-termux-
+
+Não pule etapas! Leia-o completo, pois ele é muito importante para você entender como o bot funciona!
+
+By: Dev Gui
+
+Não modifique nada abaixo, a não ser que saiba o que está fazendo!
+*/
+const { connect } = require("./src/connection");
+const { load } = require("./src/loader");
+const { badMacHandler } = require("./src/utils/badMacHandler");
+const {
+successLog,
+errorLog,
+warningLog,
+bannerLog,
+infoLog,
+} = require("./src/utils/logger");
+
+
+process.on("uncaughtException", (error) => {
+if (badMacHandler.handleError(error, "uncaughtException")) {
+return;
 }
 
-exports.menuMessage = () => {
-  const date = new Date();
+errorLog(Erro crítico não capturado: ${error.message});
+errorLog(error.stack);
 
-  const topBorder = "╔════════════════════════════════════════════════╗";
-  const bottomBorder = "╚════════════════════════════════════════════════╝";
-  const middleBorder = "╠════════════════════════════════════════════════╣";
+if (
+!error.message.includes("ENOTFOUND") &&
+!error.message.includes("timeout")
+) {
+process.exit(1);
+}
+});
 
-  let menu = `
-${topBorder}
-║ 🛰️  BEM VINDO AO  ${BOT_NAME.toUpperCase()}  🛰️
-║────────────────────────────────────────────────║
-║ Data: ${date.toLocaleDateString("pt-BR").padEnd(36)}║
-║ Hora: ${date.toLocaleTimeString("pt-BR").padEnd(36)}║
-║ Prefixo: ${PREFIX.padEnd(33)}║
-║ Versão: ${packageInfo.version.padEnd(34)}║
-║────────────────────────────────────────────────║
-║${readMore().padEnd(48)}║
-${middleBorder}
-`;
+process.on("unhandledRejection", (reason, promise) => {
+if (badMacHandler.handleError(reason, "unhandledRejection")) {
+return;
+}
 
-  for (const section of sections) {
-    const titleLine = `║ ⚡ ${section.emoji} ${section.title.toUpperCase()} ${" ".repeat(44 - section.title.length)}║`;
-    const commands = formatCommands(section.commands).split("\n").map(line => `║${line.padEnd(48)}║`).join("\n");
+errorLog(Promessa rejeitada não tratada:, reason);
+});
 
-    menu += `
-${titleLine}
-${commands}
-${middleBorder}
-`;
-  }
+async function startBot() {
+try {
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.setMaxListeners(1500);
 
-  menu += bottomBorder;
+bannerLog();  
+infoLog("Iniciando meus componentes internos...");  
 
-  return menu;
-};
+const stats = badMacHandler.getStats();  
+if (stats.errorCount > 0) {  
+  warningLog(  
+    `BadMacHandler stats: ${stats.errorCount}/${stats.maxRetries} erros`  
+  );  
+}  
+
+const socket = await connect();  
+
+load(socket);  
+
+successLog("✅ Bot iniciado com sucesso!");  
+
+setInterval(() => {  
+  const currentStats = badMacHandler.getStats();  
+  if (currentStats.errorCount > 0) {  
+    warningLog(  
+      `BadMacHandler stats: ${currentStats.errorCount}/${currentStats.maxRetries} erros`  
+    );  
+  }  
+}, 300_000);
+
+} catch (error) {
+if (badMacHandler.handleError(error, "bot-startup")) {
+warningLog("Erro Bad MAC durante inicialização, tentando novamente...");
+
+setTimeout(() => {  
+    startBot();  
+  }, 5000);  
+  return;  
+}  
+
+errorLog(`Erro ao iniciar o bot: ${error.message}`);  
+errorLog(error.stack);  
+process.exit(1);
+
+}
+}
+
+startBot();
+
