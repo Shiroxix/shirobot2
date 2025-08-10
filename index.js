@@ -1,5 +1,3 @@
-Aqui
-
 /*
 
 Este arquivo index.js é o mesmo existente em "src/index.js", ele só está aqui
