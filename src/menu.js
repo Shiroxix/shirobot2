@@ -7,10 +7,129 @@ const { BOT_NAME, PREFIX } = require("./config");
 const packageInfo = require("../package.json");
 const { readMore } = require("./utils");
 
+const sections = [
+  {
+    title: "DONO",
+    emoji: "🌌",
+    commands: [
+      "exec",
+      "get-id",
+      "off",
+      "on",
+      "set-menu-image",
+    ],
+  },
+  {
+    title: "ADMINS",
+    emoji: "⭐",
+    commands: [
+      "abrir",
+      "agendar-mensagem",
+      "anti-audio (1/0)",
+      "anti-document (1/0)",
+      "anti-event (1/0)",
+      "anti-image (1/0)",
+      "anti-link (1/0)",
+      "anti-product (1/0)",
+      "anti-sticker (1/0)",
+      "anti-video (1/0)",
+      "auto-responder (1/0)",
+      "ban",
+      "delete",
+      "exit (1/0)",
+      "fechar",
+      "hidetag",
+      "limpar",
+      "link-grupo",
+      "mute",
+      "only-admin (1/0)",
+      "promover",
+      "rebaixar",
+      "revelar",
+      "unmute",
+      "welcome (1/0)",
+    ],
+  },
+  {
+    title: "PRINCIPAL",
+    emoji: "🚀",
+    commands: [
+      "attp",
+      "cep",
+      "exemplos-de-mensagens",
+      "fake-chat",
+      "gerar-link",
+      "get-lid",
+      "google-search",
+      "perfil",
+      "ping",
+      "raw-message",
+      "rename",
+      "sticker",
+      "to-image",
+      "ttp",
+      "yt-search",
+    ],
+  },
+  {
+    title: "DOWNLOADS",
+    emoji: "🎶",
+    commands: [
+      "play-audio",
+      "play-video",
+      "tik-tok",
+      "yt-mp3",
+      "yt-mp4",
+    ],
+  },
+  {
+    title: "BRINCADEIRAS",
+    emoji: "🎡",
+    commands: [
+      "abracar",
+      "beijar",
+      "dado",
+      "jantar",
+      "lutar",
+      "matar",
+      "socar",
+    ],
+  },
+  {
+    title: "IA",
+    emoji: "🚀",
+    commands: [
+      "gemini",
+      "ia-sticker",
+      "pixart",
+      "stable-diffusion-turbo",
+    ],
+  },
+  {
+    title: "CANVAS",
+    emoji: "❇",
+    commands: [
+      "blur",
+      "bolsonaro",
+      "cadeia",
+      "contraste",
+      "espelhar",
+      "gray",
+      "inverter",
+      "pixel",
+      "rip",
+    ],
+  },
+];
+
+function formatCommands(commands) {
+  return commands.map(cmd => `▢ • ${PREFIX}${cmd}`).join("\n");
+}
+
 exports.menuMessage = () => {
   const date = new Date();
 
-  return `╭━━⪩ BEM VINDO! ⪨━━${readMore()}
+  let menu = `╭━━⪩ BEM VINDO! ⪨━━${readMore()}
 ▢
 ▢ • ${BOT_NAME}
 ▢ • Data: ${date.toLocaleDateString("pt-br")}
@@ -19,109 +138,17 @@ exports.menuMessage = () => {
 ▢ • Versão: ${packageInfo.version}
 ▢
 ╰━━─「🪐」─━━
+`;
 
-╭━━⪩ DONO ⪨━━
+  for (const section of sections) {
+    menu += `
+╭━━⪩ ${section.title} ⪨━━
 ▢
-▢ • ${PREFIX}exec
-▢ • ${PREFIX}get-id
-▢ • ${PREFIX}off
-▢ • ${PREFIX}on
-▢ • ${PREFIX}set-menu-image
+${formatCommands(section.commands)}
 ▢
-╰━━─「🌌」─━━
+╰━━─「${section.emoji}」─━━
+`;
+  }
 
-╭━━⪩ ADMINS ⪨━━
-▢
-▢ • ${PREFIX}abrir
-▢ • ${PREFIX}agendar-mensagem
-▢ • ${PREFIX}anti-audio (1/0)
-▢ • ${PREFIX}anti-document (1/0)
-▢ • ${PREFIX}anti-event (1/0)
-▢ • ${PREFIX}anti-image (1/0)
-▢ • ${PREFIX}anti-link (1/0)
-▢ • ${PREFIX}anti-product (1/0)
-▢ • ${PREFIX}anti-sticker (1/0)
-▢ • ${PREFIX}anti-video (1/0)
-▢ • ${PREFIX}auto-responder (1/0)
-▢ • ${PREFIX}ban
-▢ • ${PREFIX}delete
-▢ • ${PREFIX}exit (1/0)
-▢ • ${PREFIX}fechar
-▢ • ${PREFIX}hidetag
-▢ • ${PREFIX}limpar
-▢ • ${PREFIX}link-grupo
-▢ • ${PREFIX}mute
-▢ • ${PREFIX}only-admin (1/0)
-▢ • ${PREFIX}promover
-▢ • ${PREFIX}rebaixar
-▢ • ${PREFIX}revelar
-▢ • ${PREFIX}unmute
-▢ • ${PREFIX}welcome (1/0)
-▢
-╰━━─「⭐」─━━
-
-╭━━⪩ PRINCIPAL ⪨━━
-▢
-▢ • ${PREFIX}attp
-▢ • ${PREFIX}cep
-▢ • ${PREFIX}exemplos-de-mensagens
-▢ • ${PREFIX}fake-chat
-▢ • ${PREFIX}gerar-link
-▢ • ${PREFIX}get-lid
-▢ • ${PREFIX}google-search
-▢ • ${PREFIX}perfil
-▢ • ${PREFIX}ping
-▢ • ${PREFIX}raw-message
-▢ • ${PREFIX}rename
-▢ • ${PREFIX}sticker
-▢ • ${PREFIX}to-image
-▢ • ${PREFIX}ttp
-▢ • ${PREFIX}yt-search
-▢
-╰━━─「🚀」─━━
-
-╭━━⪩ DOWNLOADS ⪨━━
-▢
-▢ • ${PREFIX}play-audio
-▢ • ${PREFIX}play-video
-▢ • ${PREFIX}tik-tok
-▢ • ${PREFIX}yt-mp3
-▢ • ${PREFIX}yt-mp4
-▢
-╰━━─「🎶」─━━
-
-╭━━⪩ BRINCADEIRAS ⪨━━
-▢
-▢ • ${PREFIX}abracar
-▢ • ${PREFIX}beijar
-▢ • ${PREFIX}dado
-▢ • ${PREFIX}jantar
-▢ • ${PREFIX}lutar
-▢ • ${PREFIX}matar
-▢ • ${PREFIX}socar
-▢
-╰━━─「🎡」─━━
-
-╭━━⪩ IA ⪨━━
-▢
-▢ • ${PREFIX}gemini
-▢ • ${PREFIX}ia-sticker
-▢ • ${PREFIX}pixart
-▢ • ${PREFIX}stable-diffusion-turbo
-▢
-╰━━─「🚀」─━━
-
-╭━━⪩ CANVAS ⪨━━
-▢
-▢ • ${PREFIX}blur
-▢ • ${PREFIX}bolsonaro
-▢ • ${PREFIX}cadeia
-▢ • ${PREFIX}contraste
-▢ • ${PREFIX}espelhar
-▢ • ${PREFIX}gray
-▢ • ${PREFIX}inverter
-▢ • ${PREFIX}pixel
-▢ • ${PREFIX}rip
-▢
-╰━━─「❇」─━━`;
+  return menu.trim();
 };
